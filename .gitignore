@@ -1,0 +1,12 @@
+# Diretórios de build
+/build/
+
+# Diretórios de dependências do npm
+/node_modules/
+
+# Arquivos de configuração de IDE
+.idea/
+.vscode/
+
+# Arquivos de log
+*.log
