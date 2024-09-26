@@ -96,14 +96,15 @@ contract SupplyChain {
         string memory details, 
         State state, 
         string memory destination, 
-        int256[] memory currentLoc, 
+        int256 currentLatitude,
+        int256 currentLongitude,
         int256[] memory locationHistory
         ) {
         Product memory product = products[_productId];
 
-        int256[] memory currentLocation = new int256[](2);
-        currentLocation[0] = product.currentLocation.latitude;
-        currentLocation[1] = product.currentLocation.longitude;
+        // Convertendo latitude e longitude para strings
+        currentLatitude = product.currentLocation.latitude;
+        currentLongitude = product.currentLocation.longitude;
 
         int256[] memory history = new int256[](product.locationHistory.length * 2);
 
@@ -112,7 +113,7 @@ contract SupplyChain {
             history[i * 2 + 1] = product.locationHistory[i].longitude;
         }
 
-        return (product.name, product.origin, product.details, product.state, product.destination, currentLocation, history);
+        return (product.name, product.origin, product.details, product.state, product.destination, currentLatitude, currentLongitude, history);
     }
     
     function getLocationHistory(bytes32 _productId) public view returns (int256[] memory) {

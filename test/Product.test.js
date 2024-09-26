@@ -39,22 +39,49 @@ contract("SupplyChain", accounts => {
         assert.equal(history[3].toString(), "754321"); // Longitude na quarta posição
     });
 
-    it("Should return product information correctly", async () => {
+    it("Should return the current location of the product after creation", async () => {
         const productId = await supplyChain.generateProductId("Product A", "Origin A");
-        await supplyChain.addProduct("Product A", "Origin A", "Details of Product A", "Destination A", 123, 653, { from: producer });
+        await supplyChain.addProduct("Product A", "Origin A", "Details of Product A", "Destination A", 123456, 654321, { from: producer });
+    
+        // Retrieve the product information directly from the contract
+        const product = await supplyChain.products(productId);
+    
+        // Log the current location to check its values
+        console.log("Current Location:", product.currentLocation.latitude.toString(), product.currentLocation.longitude.toString());
+    
+        // Assertions to ensure the current location is correct
+        assert.equal(product.currentLocation.latitude.toString(), "123456");
+        assert.equal(product.currentLocation.longitude.toString(), "654321");
+    });
 
-        const result = await supplyChain.getProduct(productId);
-        console.log(result);
-
-        const [name, origin, details, state, destination, currentLocation, locationHistory] = result;
-
+    it("Should return the product information correctly", async () => {
+        const productId = await supplyChain.generateProductId("Product A", "Origin A");
+        await supplyChain.addProduct("Product A", "Origin A", "Details of Product A", "Destination A", 123456, 654321, { from: producer });
+    
+        const result = await supplyChain.products(productId);
+        console.log(result); // Log the result for debugging
+    
+        // Destructure the result
+        const name = result.name;
+        const origin = result.origin;
+        const details = result.details;
+        const state = result.state.toNumber(); // Convert state to number
+        const destination = result.destination; // Capture the destination
+        const currentLatitude = result.currentLocation.latitude.toString();
+        const currentLongitude = result.currentLocation.longitude.toString();
+        const locationHistory = [];
+        for (let i = 0; i < result[6].length; i++) {
+            locationHistory.push(parseInt(result[6][i].toString())); // Convert location history to numbers
+        }
+    
+        // Assertions
         assert.equal(name, "Product A");
         assert.equal(origin, "Origin A");
         assert.equal(details, "Details of Product A");
-        assert.equal(state.toString(), "0"); // State.Created
-        assert.equal(destination, "Destination A");
-        assert.equal(currentLocation.latitude.toString(), "123456");
-        assert.equal(currentLocation.longitude.toString(), "654321");
+        assert.equal(state, 0); // State.Created
+        assert.equal(currentLatitude.toString(), "123456");
+        assert.equal(currentLongitude.toString(), "654321");
+        assert.equal(destination, "Destination A"); // Adding check for destination
         assert.isAbove(locationHistory.length, 0);
     });
 
