@@ -3,10 +3,10 @@ pragma solidity ^0.8.0;
 
 contract SupplyChain {
 
-    address public owner;
     address public producer;
     address public transporter;
     address public retailer;
+    address public participant;
 
     enum State { Created, Shipped, InTransit, Delivered }
 
@@ -47,15 +47,15 @@ contract SupplyChain {
     }
 
     modifier onlyParticipant() {
-        require(msg.sender == producer || msg.sender == transporter || msg.sender == retailer, "Only authorized participants can call this function.");
+        require(msg.sender == producer || msg.sender == transporter || msg.sender == retailer || msg.sender == participant, "Only authorized participants can call this function.");
         _;
     }
 
-    constructor(address _producer, address _transporter, address _retailer) {
-        owner = msg.sender;
+    constructor(address _producer, address _transporter, address _retailer, address _participant) {
         producer = _producer;
         transporter = _transporter;
         retailer = _retailer;
+        participant = _participant;
     }
 
     function generateProductId(string memory _name, string memory _origin) public pure returns (bytes32) {

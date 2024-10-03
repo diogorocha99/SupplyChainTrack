@@ -10,3 +10,6 @@
 
 # Arquivos de log
 *.log
+
+
+.env

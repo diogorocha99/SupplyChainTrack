@@ -1,12 +1,12 @@
 const SupplyChain = artifacts.require("SupplyChain");
 
 contract("SupplyChain", accounts => {
-    const [owner, producer, transporter, retailer] = accounts;
+    const [producer, transporter, retailer, participant] = accounts;
 
     let supplyChain;
 
     beforeEach(async () => {
-        supplyChain = await SupplyChain.new(producer, transporter, retailer);
+        supplyChain = await SupplyChain.new(producer, transporter, retailer, participant);
     });
 
     it("Creation of the product", async () => {
